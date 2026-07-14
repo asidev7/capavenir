@@ -15,6 +15,7 @@ redis>=5.0
 # --- Auth ---
 django-allauth>=64.0
 PyJWT>=2.9
+cryptography>=42.0
 
 # --- Admin theme ---
 django-jazzmin>=3.0
