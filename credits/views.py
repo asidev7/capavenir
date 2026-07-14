@@ -42,7 +42,7 @@ def checkout(request, pack_id):
     try:
         fedapay_id, payment_url = fedapay.create_transaction(
             amount=pack.price_xof,
-            description=f"MonChoix — {pack.name} ({pack.credits} crédits)",
+            description=f"Cap Avenir — {pack.name} ({pack.credits} crédits)",
             customer_email=request.user.email,
             callback_url=callback_url,
         )

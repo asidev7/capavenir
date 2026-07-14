@@ -1,8 +1,8 @@
-# MonChoix — Orientation IA pour étudiants & chercheurs d'emploi en Afrique
+# Cap Avenir — Orientation IA pour étudiants & chercheurs d'emploi en Afrique
 
 **by ASITECH SOLUTION**
 
-MonChoix guide l'utilisateur à travers un **questionnaire conversationnel** (chatbot),
+Cap Avenir guide l'utilisateur à travers un **questionnaire conversationnel** (chatbot),
 puis un **agent IA** (RAG + recherche web + DeepSeek) génère un **rapport d'orientation
 complet** : score de profil, top 10 filières, universités, débouchés, salaires, compétences,
 conseils et plan de carrière. Monétisation par **système de crédits** (paiement FedaPay).
@@ -31,8 +31,8 @@ pip install -r requirements.txt
 cp .env.example .env        # puis renseigner les clés
 
 # PostgreSQL + extension pgvector
-sudo -u postgres psql -c "CREATE DATABASE monchoix;"
-sudo -u postgres psql -d monchoix -c "CREATE EXTENSION IF NOT EXISTS vector;"
+sudo -u postgres psql -c "CREATE DATABASE capavenir;"
+sudo -u postgres psql -d capavenir -c "CREATE EXTENSION IF NOT EXISTS vector;"
 # (la migration knowledge.0001 crée aussi l'extension automatiquement)
 
 python manage.py migrate
@@ -97,4 +97,4 @@ traitement idempotent. À déclarer dans le dashboard FedaPay.
 
 Débit atomique + remboursement, webhook signé & idempotent, clés API côté serveur,
 CSRF, cookies sécurisés + HSTS en production (`DEBUG=False`).
-# monchoix
+# capavenir

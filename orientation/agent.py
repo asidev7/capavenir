@@ -1,4 +1,4 @@
-"""The MonChoix orientation agent: RAG + web search + DeepSeek reasoning.
+"""The Cap Avenir orientation agent: RAG + web search + DeepSeek reasoning.
 
 Produces a strict-JSON orientation report from a consolidated profile.
 """

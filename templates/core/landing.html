@@ -1,40 +1,46 @@
 {% extends "base.html" %}
+{% load static %}
 {% block content %}
 
 <!-- ============ HERO ============ -->
-<section class="relative overflow-hidden bg-brand text-white">
-  <!-- decorative shapes -->
-  <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-white/5"></div>
-  <div class="absolute top-40 -left-32 w-80 h-80 rounded-full bg-brand-light/10"></div>
-  <div class="absolute inset-0 bg-gradient-to-b from-brand via-brand to-brand-dark opacity-90"></div>
+<section class="relative overflow-hidden bg-brand-dark text-white">
+  <!-- background photo -->
+  <img src="{% static 'img/hero-students.jpg' %}" alt="Étudiants qui construisent leur avenir"
+       class="absolute inset-0 w-full h-full object-cover">
+  <!-- color wash so the photo reads as one system with the brand -->
+  <div class="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-dark/95 to-brand-dark/60"></div>
+  <div class="absolute inset-0 bg-gradient-to-t from-brand-dark via-transparent to-brand-dark/40"></div>
+  <!-- decorative accent glow -->
+  <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-accent/10 blur-3xl"></div>
+  <div class="absolute top-40 -left-32 w-80 h-80 rounded-full bg-brand-light/10 blur-3xl"></div>
 
   <div class="relative max-w-7xl mx-auto px-4 sm:px-8 py-20 sm:py-28 grid lg:grid-cols-2 gap-12 items-center">
     <div class="text-center lg:text-left">
-      <span class="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 text-brand-light text-sm font-bold px-4 py-1.5 mb-6">
+      <span class="inline-flex items-center gap-2 rounded-full bg-white/10 border border-white/20 text-accent text-sm font-bold px-4 py-1.5 mb-6 backdrop-blur">
         <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4"/></svg>
         +{{ signup_bonus }} crédits offerts à l'inscription
       </span>
       <h1 class="title-uppercase text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight">
-        Choisis ta filière
-        <span class="text-brand-light">avec confiance</span>
+        Mets le cap sur
+        <span class="bg-gradient-to-r from-accent to-brand-light bg-clip-text text-transparent">ton avenir</span>
       </h1>
       <p class="mt-6 text-lg text-brand-light/90 max-w-xl mx-auto lg:mx-0">
-        MonChoix te pose les bonnes questions, analyse ton profil grâce à l'IA et
+        Cap Avenir te pose les bonnes questions, analyse ton profil grâce à l'IA et
         génère un <strong class="text-white">rapport d'orientation complet</strong> :
         top filières, universités, débouchés, salaires et plan de carrière.
       </p>
       <div class="mt-10 flex flex-wrap items-center justify-center lg:justify-start gap-4">
         {% if user.is_authenticated %}
-          <a href="{% url 'orientation:start' %}" class="rounded-full bg-white px-8 py-3.5 font-bold text-brand hover:bg-brand-light transition">Démarrer mon orientation</a>
+          <a href="{% url 'orientation:start' %}" class="rounded-full bg-accent px-8 py-3.5 font-bold text-brand-dark hover:bg-accent-dark shadow-lg shadow-accent/20 transition">Démarrer mon orientation</a>
         {% else %}
-          <a href="{% url 'account_signup' %}" class="rounded-full bg-white px-8 py-3.5 font-bold text-brand hover:bg-brand-light transition">Commencer gratuitement</a>
+          <a href="{% url 'account_signup' %}" class="rounded-full bg-accent px-8 py-3.5 font-bold text-brand-dark hover:bg-accent-dark shadow-lg shadow-accent/20 transition">Commencer gratuitement</a>
           <a href="#comment-ca-marche" class="rounded-full border-2 border-white/40 px-8 py-3.5 font-bold text-white hover:border-white transition">Comment ça marche ?</a>
         {% endif %}
       </div>
       <div class="mt-10 flex flex-wrap items-center justify-center lg:justify-start gap-x-8 gap-y-3 text-sm text-brand-light/80 font-semibold">
-        <span class="inline-flex items-center gap-2"><svg class="w-5 h-5 text-brand-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> 19 questions personnalisées</span>
-        <span class="inline-flex items-center gap-2"><svg class="w-5 h-5 text-brand-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> Rapport PDF téléchargeable</span>
-        <span class="inline-flex items-center gap-2"><svg class="w-5 h-5 text-brand-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> Sources vérifiées</span>
+        <span class="inline-flex items-center gap-2"><svg class="w-5 h-5 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> 19 questions personnalisées</span>
+        <span class="inline-flex items-center gap-2"><svg class="w-5 h-5 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> Rapport PDF téléchargeable</span>
+        <span class="inline-flex items-center gap-2"><svg class="w-5 h-5 text-accent" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> Sources vérifiées</span>
       </div>
     </div>
 
@@ -45,7 +51,7 @@
           <span class="w-3 h-3 rounded-full bg-red-400"></span>
           <span class="w-3 h-3 rounded-full bg-yellow-400"></span>
           <span class="w-3 h-3 rounded-full bg-green-400"></span>
-          <span class="ml-auto text-xs font-bold text-brand title-uppercase">MonChoix · IA</span>
+          <span class="ml-auto text-xs font-bold text-brand title-uppercase">Cap Avenir · IA</span>
         </div>
         <div class="space-y-3">
           <div class="flex gap-2">
@@ -60,7 +66,7 @@
           <div class="mt-4 rounded-2xl bg-brand-light/40 border border-brand-light p-4">
             <p class="text-xs font-bold text-brand title-uppercase mb-2">Ton rapport</p>
             <div class="flex items-center gap-3">
-              <div class="w-12 h-12 rounded-full bg-brand text-white flex items-center justify-center font-extrabold">92</div>
+              <div class="w-12 h-12 rounded-full bg-gradient-to-br from-brand to-brand-dark text-white flex items-center justify-center font-extrabold">92</div>
               <div class="text-sm">
                 <p class="font-bold">Génie logiciel</p>
                 <p class="text-gray-500 text-xs">Top filière recommandée</p>
@@ -94,21 +100,23 @@
   <p class="mt-4 text-center text-gray-500 max-w-2xl mx-auto">Trois étapes simples, et l'IA se charge du reste.</p>
 
   <div class="mt-14 grid md:grid-cols-3 gap-8 relative">
+    <!-- connecting line (desktop only) -->
+    <div class="hidden md:block absolute top-8 left-[16.5%] right-[16.5%] h-0.5 bg-gradient-to-r from-brand via-brand-light to-brand"></div>
     <!-- step 1 -->
-    <div class="text-center">
-      <div class="mx-auto w-16 h-16 rounded-full bg-brand text-white flex items-center justify-center text-2xl font-extrabold card-shadow">1</div>
+    <div class="relative text-center">
+      <div class="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-brand to-brand-dark text-white flex items-center justify-center text-2xl font-extrabold card-shadow ring-4 ring-white">1</div>
       <h3 class="mt-5 font-bold text-lg title-uppercase text-brand">Réponds au chatbot</h3>
       <p class="mt-2 text-gray-600 text-sm">19 questions simples sur ton parcours, tes passions, ta personnalité et tes objectifs.</p>
     </div>
     <!-- step 2 -->
-    <div class="text-center">
-      <div class="mx-auto w-16 h-16 rounded-full bg-brand text-white flex items-center justify-center text-2xl font-extrabold card-shadow">2</div>
+    <div class="relative text-center">
+      <div class="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-brand to-brand-dark text-white flex items-center justify-center text-2xl font-extrabold card-shadow ring-4 ring-white">2</div>
       <h3 class="mt-5 font-bold text-lg title-uppercase text-brand">L'IA analyse</h3>
       <p class="mt-2 text-gray-600 text-sm">Un agent IA croise une base de connaissances et la recherche web, sources à l'appui.</p>
     </div>
     <!-- step 3 -->
-    <div class="text-center">
-      <div class="mx-auto w-16 h-16 rounded-full bg-brand text-white flex items-center justify-center text-2xl font-extrabold card-shadow">3</div>
+    <div class="relative text-center">
+      <div class="mx-auto w-16 h-16 rounded-full bg-gradient-to-br from-brand to-brand-dark text-white flex items-center justify-center text-2xl font-extrabold card-shadow ring-4 ring-white">3</div>
       <h3 class="mt-5 font-bold text-lg title-uppercase text-brand">Reçois ton rapport</h3>
       <p class="mt-2 text-gray-600 text-sm">Top filières, universités, salaires et plan de carrière — téléchargeable en PDF.</p>
     </div>
@@ -120,22 +128,22 @@
   <div class="max-w-7xl mx-auto px-4 sm:px-8 py-20">
     <h2 class="title-uppercase text-3xl sm:text-4xl font-extrabold text-center text-brand">Ce que tu obtiens</h2>
     <div class="mt-12 grid sm:grid-cols-3 gap-6">
-      <div class="rounded-2xl bg-white card-shadow p-7">
-        <div class="w-12 h-12 rounded-full bg-brand-light text-brand flex items-center justify-center mb-4">
+      <div class="rounded-2xl bg-white card-shadow p-7 hover:-translate-y-1 transition-transform">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-light to-brand text-white flex items-center justify-center mb-4">
           <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 10h8M8 14h5"/><path d="M21 12a9 9 0 1 1-4.2-7.6L21 3v6h-6"/></svg>
         </div>
         <h3 class="font-bold text-lg text-brand">Chatbot par étapes</h3>
         <p class="mt-2 text-gray-600 text-sm">19 questions guidées sur ton profil, ta personnalité et tes ambitions.</p>
       </div>
-      <div class="rounded-2xl bg-white card-shadow p-7">
-        <div class="w-12 h-12 rounded-full bg-brand-light text-brand flex items-center justify-center mb-4">
+      <div class="rounded-2xl bg-white card-shadow p-7 hover:-translate-y-1 transition-transform">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-light to-brand text-white flex items-center justify-center mb-4">
           <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
         </div>
         <h3 class="font-bold text-lg text-brand">Agent IA + recherche web</h3>
         <p class="mt-2 text-gray-600 text-sm">L'IA croise une base de connaissances et la recherche en ligne, sources à l'appui.</p>
       </div>
-      <div class="rounded-2xl bg-white card-shadow p-7">
-        <div class="w-12 h-12 rounded-full bg-brand-light text-brand flex items-center justify-center mb-4">
+      <div class="rounded-2xl bg-white card-shadow p-7 hover:-translate-y-1 transition-transform">
+        <div class="w-12 h-12 rounded-xl bg-gradient-to-br from-brand-light to-brand text-white flex items-center justify-center mb-4">
           <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M9 15l2 2 4-4"/></svg>
         </div>
         <h3 class="font-bold text-lg text-brand">Rapport complet en PDF</h3>
@@ -152,7 +160,7 @@
   <p class="mt-4 text-center text-gray-500">Paie uniquement ce dont tu as besoin.</p>
   <div class="mt-12 grid sm:grid-cols-3 gap-6">
     {% for pack in packs %}
-    <div class="rounded-2xl bg-white card-shadow border border-brand-light p-7 text-center">
+    <div class="rounded-2xl bg-white card-shadow border border-brand-light p-7 text-center hover:-translate-y-1 hover:shadow-xl transition-all">
       <h3 class="font-bold text-lg text-brand title-uppercase">{{ pack.name }}</h3>
       <p class="mt-3 text-4xl font-extrabold text-brand">{{ pack.credits }}<span class="text-base font-semibold text-gray-400"> crédits</span></p>
       <p class="mt-1 text-gray-600 font-semibold">{{ pack.price_xof|floatformat:0 }} FCFA</p>
@@ -164,15 +172,16 @@
 
 <!-- ============ FINAL CTA ============ -->
 <section class="max-w-7xl mx-auto px-4 sm:px-8 pb-20">
-  <div class="rounded-3xl bg-brand text-white text-center px-6 py-16 relative overflow-hidden">
-    <div class="absolute -top-16 -right-16 w-72 h-72 rounded-full bg-white/5"></div>
+  <div class="rounded-3xl bg-gradient-to-br from-brand to-brand-dark text-white text-center px-6 py-16 relative overflow-hidden">
+    <div class="absolute -top-16 -right-16 w-72 h-72 rounded-full bg-accent/10 blur-2xl"></div>
+    <div class="absolute -bottom-16 -left-16 w-72 h-72 rounded-full bg-white/5 blur-2xl"></div>
     <h2 class="relative title-uppercase text-3xl sm:text-4xl font-extrabold">Prêt à trouver ta voie&nbsp;?</h2>
     <p class="relative mt-4 text-brand-light/90 max-w-xl mx-auto">Commence gratuitement, l'IA fait le reste.</p>
     <div class="relative mt-8 flex justify-center">
       {% if user.is_authenticated %}
-        <a href="{% url 'orientation:start' %}" class="rounded-full bg-white px-10 py-4 font-bold text-brand hover:bg-brand-light transition">Démarrer mon orientation</a>
+        <a href="{% url 'orientation:start' %}" class="rounded-full bg-accent px-10 py-4 font-bold text-brand-dark hover:bg-accent-dark shadow-lg shadow-accent/20 transition">Démarrer mon orientation</a>
       {% else %}
-        <a href="{% url 'account_signup' %}" class="rounded-full bg-white px-10 py-4 font-bold text-brand hover:bg-brand-light transition">Commencer gratuitement</a>
+        <a href="{% url 'account_signup' %}" class="rounded-full bg-accent px-10 py-4 font-bold text-brand-dark hover:bg-accent-dark shadow-lg shadow-accent/20 transition">Commencer gratuitement</a>
       {% endif %}
     </div>
   </div>

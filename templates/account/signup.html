@@ -1,6 +1,6 @@
 {% extends "auth_base.html" %}
 {% load socialaccount %}
-{% block title %}Inscription — MonChoix{% endblock %}
+{% block title %}Inscription — Cap Avenir{% endblock %}
 {% block content %}
 <div class="grid lg:grid-cols-2 min-h-screen">
 
@@ -9,10 +9,7 @@
     <div class="absolute -top-24 -right-24 w-96 h-96 rounded-full bg-white/5"></div>
     <div class="absolute bottom-0 -left-24 w-80 h-80 rounded-full bg-brand-light/10"></div>
     <div class="relative">
-      <span class="inline-flex items-center gap-2 font-extrabold text-2xl title-uppercase">
-        <svg class="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 3 7l9 5 9-5-9-5Z"/><path d="M3 12l9 5 9-5"/></svg>
-        MonChoix
-      </span>
+      {% include "partials/logo.html" with box="w-11 h-11" icon="w-6 h-6" text="text-2xl" text_color="text-white" %}
     </div>
     <div class="relative">
       <h2 class="title-uppercase text-3xl font-extrabold leading-tight">Ton avenir commence ici.</h2>
@@ -23,7 +20,7 @@
         <li class="flex items-center gap-2"><svg class="w-5 h-5 text-brand-light" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 6 9 17l-5-5"/></svg> Rapport PDF téléchargeable</li>
       </ul>
     </div>
-    <p class="relative text-xs text-brand-light/60">© {% now "Y" %} MonChoix — by ASITECH SOLUTION</p>
+    <p class="relative text-xs text-brand-light/60">© {% now "Y" %} Cap Avenir — by ASITECH SOLUTION</p>
   </div>
 
   <!-- RIGHT : formulaire -->

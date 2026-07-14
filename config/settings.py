@@ -1,5 +1,5 @@
 """
-Django settings for MonChoix (ASITECH SOLUTION).
+Django settings for Cap Avenir (ASITECH SOLUTION).
 """
 
 from pathlib import Path
@@ -44,7 +44,7 @@ EMAIL_BACKEND = env(
     "django.core.mail.backends.console.EmailBackend" if DEBUG
     else "django.core.mail.backends.smtp.EmailBackend",
 )
-DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", "MonChoix <no-reply@monchoix.bj>")
+DEFAULT_FROM_EMAIL = env("DEFAULT_FROM_EMAIL", "Cap Avenir <no-reply@monchoix.bj>")
 
 # --- Applications ---
 INSTALLED_APPS = [
@@ -219,10 +219,11 @@ LOGGING = {
 
 # --- Jazzmin (admin theme) ---
 JAZZMIN_SETTINGS = {
-    "site_title": "MonChoix Admin",
-    "site_header": "MonChoix",
-    "site_brand": "MonChoix",
-    "welcome_sign": "Bienvenue sur l'administration MonChoix",
+    "site_title": "Cap Avenir Admin",
+    "site_header": "Cap Avenir",
+    "site_brand": "Cap Avenir",
+    "site_icon": "img/favicon.svg",
+    "welcome_sign": "Bienvenue sur l'administration Cap Avenir",
     "copyright": "ASITECH SOLUTION",
     "search_model": ["accounts.User", "knowledge.KnowledgeDocument"],
     "topmenu_links": [

@@ -228,4 +228,4 @@ def report_pdf(request, report_id):
         pdf_service.build_report_pdf(report)
     if not report.pdf_file:
         raise Http404("PDF indisponible.")
-    return FileResponse(report.pdf_file.open("rb"), as_attachment=True, filename=f"rapport-monchoix-{report.pk}.pdf")
+    return FileResponse(report.pdf_file.open("rb"), as_attachment=True, filename=f"rapport-cap-avenir-{report.pk}.pdf")
