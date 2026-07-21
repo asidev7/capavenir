@@ -13,8 +13,10 @@
     </div>
     <div class="rounded-2xl bg-white card-shadow p-6">
       <p class="text-sm text-gray-400 font-semibold">1 rapport d'orientation</p>
-      <p class="mt-1 text-2xl font-extrabold text-brand">{{ credits_per_report|default:5 }} crédits</p>
-      <p class="text-xs text-gray-400 mt-1">Les crédits servent aux analyses IA et autres services.</p>
+      <p class="mt-1 text-2xl font-extrabold text-brand">{{ credits_per_report }} crédits</p>
+      <p class="text-xs text-gray-400 mt-1">
+        +{{ advanced_surcharge }} crédits pour un niveau d'orientation avancé (licence, master, doctorat…).
+      </p>
     </div>
   </div>
 

@@ -14,10 +14,15 @@
   th { background: #f3f4f6; }
   .score { font-size: 30px; font-weight: bold; color: #0048AE; }
   .tag { display: inline-block; border: 1px solid #0048AE33; color: #0048AE; border-radius: 12px; padding: 2px 8px; margin: 2px; }
+  .warning { border: 1px solid #f2b13466; background: #fff8e6; border-radius: 6px; padding: 10px 12px; margin-top: 26px; }
 </style>
 </head>
 <body>
   <h1>Cap Avenir — Rapport d'orientation</h1>
+  <p class="muted">
+    {{ session.user.display_name }}
+    {% if session.user.email %} — {{ session.user.email }}{% endif %}
+  </p>
   <p class="muted">Généré le {{ report.created_at|date:"d/m/Y à H:i" }} — by ASITECH SOLUTION</p>
 
   <h2>Score du profil</h2>
@@ -52,6 +57,13 @@
   <p>{% for sk in report.skills_to_develop %}<span class="tag">{{ sk }}</span>{% endfor %}</p>
   {% endif %}
 
+  {% if session.answers.grades %}
+  <h2>Notes par matière</h2>
+  <table><tr><th>Matière</th><th>Note /20</th></tr>
+  {% for matiere, note in session.answers.grades.items %}<tr><td>{{ matiere }}</td><td>{{ note }}</td></tr>{% endfor %}
+  </table>
+  {% endif %}
+
   {% if report.personalized_advice %}
   <h2>Conseils personnalisés</h2>
   <p>{{ report.personalized_advice|linebreaksbr }}</p>
@@ -66,5 +78,11 @@
   <h2>Sources</h2>
   <ul>{% for s in report.sources %}<li>{{ s.titre }}{% if s.url %} — {{ s.url }}{% endif %}</li>{% endfor %}</ul>
   {% endif %}
+
+  <div class="warning">
+    <strong>⚠ Avertissement :</strong> ce rapport est généré par une intelligence artificielle.
+    L'IA peut faire des erreurs ou des approximations (coûts, admissions, dates) : vérifie les informations
+    importantes auprès des établissements et sources officielles avant toute décision.
+  </div>
 </body>
 </html>

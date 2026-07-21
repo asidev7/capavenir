@@ -8,32 +8,29 @@
   <link rel="icon" type="image/svg+xml" href="{% static 'img/favicon.svg' %}">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
     tailwind.config = { theme: { extend: {
       colors: { brand: '#0a3764', 'brand-dark': '#072844', 'brand-light': '#d8e8f9', accent: '#f2b134', 'accent-dark': '#d99416' },
-      fontFamily: { sans: ['Montserrat','ui-sans-serif','system-ui','sans-serif'] },
+      fontFamily: { sans: ['Roboto','ui-sans-serif','system-ui','sans-serif'] },
+      keyframes: {
+        'fade-in-up': { '0%': { opacity: 0, transform: 'translateY(12px)' }, '100%': { opacity: 1, transform: 'translateY(0)' } },
+      },
+      animation: {
+        'fade-in-up': 'fade-in-up .6s ease-out both',
+      },
     }}}
   </script>
   <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
   <style>
     [x-cloak]{display:none!important}
-    body{font-family:'Montserrat',ui-sans-serif,system-ui,sans-serif}
+    body{font-family:'Roboto',ui-sans-serif,system-ui,sans-serif}
     .title-uppercase{text-transform:uppercase;letter-spacing:.01em}
   </style>
 </head>
 <body class="h-full bg-white text-gray-900">
-{% if messages %}
-<div class="fixed top-4 inset-x-0 z-50 max-w-md mx-auto px-4 space-y-2">
-  {% for message in messages %}
-  <div class="rounded-md border px-4 py-3 text-sm shadow
-    {% if message.tags == 'error' %}border-red-200 bg-red-50 text-red-700
-    {% elif message.tags == 'success' %}border-green-200 bg-green-50 text-green-700
-    {% else %}border-blue-200 bg-blue-50 text-brand{% endif %}">{{ message }}</div>
-  {% endfor %}
-</div>
-{% endif %}
+{% include "partials/toasts.html" %}
 {% block content %}{% endblock %}
 {% block scripts %}{% endblock %}
 </body>

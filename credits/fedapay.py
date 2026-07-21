@@ -6,18 +6,20 @@ import logging
 import requests
 from django.conf import settings
 
+from core import config as platform_config
+
 logger = logging.getLogger(__name__)
 
 
 def _base_url():
-    if settings.FEDAPAY_ENVIRONMENT == "live":
+    if platform_config.get("fedapay_environment") == "live":
         return "https://api.fedapay.com/v1"
     return "https://sandbox-api.fedapay.com/v1"
 
 
 def _headers():
     return {
-        "Authorization": f"Bearer {settings.FEDAPAY_SECRET_KEY}",
+        "Authorization": f"Bearer {platform_config.get('fedapay_secret_key')}",
         "Content-Type": "application/json",
     }
 
@@ -46,7 +48,7 @@ def create_transaction(*, amount, description, customer_email, callback_url):
 
 def verify_webhook_signature(payload_body: bytes, signature_header: str) -> bool:
     """Verify the FedaPay `X-FEDAPAY-SIGNATURE` header (HMAC-SHA256)."""
-    secret = settings.FEDAPAY_WEBHOOK_SECRET
+    secret = platform_config.get("fedapay_webhook_secret")
     if not secret or not signature_header:
         return False
     # Header format: "t=timestamp,s=signature"

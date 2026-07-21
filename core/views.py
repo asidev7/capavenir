@@ -19,7 +19,8 @@ def landing(request):
         "core/landing.html",
         {
             "packs": CreditPack.objects.filter(active=True)[:3],
-            "signup_bonus": settings.SIGNUP_BONUS_CREDITS,
+            "credits_per_report": settings.CREDITS_PER_REPORT,
+            "advanced_surcharge": settings.ADVANCED_LEVEL_SURCHARGE,
             "stats": [
                 ("10", "Questions ciblées"),
                 ("Top 10", "Filières classées"),
@@ -28,31 +29,6 @@ def landing(request):
             ],
         },
     )
-
-
-@login_required
-def my_dashboard(request):
-    """Personal dashboard for a logged-in student."""
-    reports = OrientationReport.objects.filter(
-        session__user=request.user
-    ).select_related("session").order_by("-created_at")
-    sessions = OrientationSession.objects.filter(user=request.user)
-    in_progress = sessions.filter(status=OrientationSession.Status.IN_PROGRESS).order_by("-created_at").first()
-    context = {
-        "reports_count": reports.count(),
-        "recent_reports": reports[:4],
-        "sessions_count": sessions.count(),
-        "in_progress": in_progress,
-        "credits": request.user.credits,
-        "credits_per_report": settings.CREDITS_PER_REPORT,
-    }
-    return render(request, "core/my_dashboard.html", context)
-
-
-@login_required
-def guides(request):
-    """Static guide explaining how university works in Benin."""
-    return render(request, "core/guides.html")
 
 
 def _last_months(n=6):

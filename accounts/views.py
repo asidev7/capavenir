@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect, render
 
-from orientation.models import OrientationReport, OrientationSession
+from orientation.models import OrientationSession
 
 from .forms import AvatarForm, ProfileForm
 from .models import Profile

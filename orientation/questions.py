@@ -21,6 +21,10 @@ LEVELS = [
     ("EMPLOI", "Insertion professionnelle / reconversion"),
 ]
 
+# Niveaux "avancés" : recherche plus poussée (spécialisation, marché de l'emploi...),
+# facturée en supplément (voir settings.ADVANCED_LEVEL_SURCHARGE).
+ADVANCED_LEVELS = {"LICENCE", "MASTER", "DOCTORAT", "REORIENTATION", "EMPLOI"}
+
 LEARNING_STYLES = [
     ("THEORIE", "Plutôt la théorie"),
     ("PRATIQUE", "Plutôt la pratique"),
@@ -115,6 +119,9 @@ def build_questions():
         {"key": "favorite_subjects", "type": "subjects_multi",
          "label": "Tes matières préférées ?", "depends_on": "bac_serie", "required": False,
          "description": "Sélectionne les matières où tu es le plus à l'aise ou que tu aimes le plus."},
+        {"key": "grades", "type": "grades", "label": "Tes notes par matière (si tu les as)",
+         "depends_on": "bac_serie", "required": False,
+         "description": "Facultatif : indique tes notes sur 20, elles apparaîtront dans ton rapport et affinent les recommandations."},
         # --- Profil : ce qui te caractérise ---
         {"key": "passions_interests", "type": "textarea",
          "label": "Tes passions et centres d'intérêt ?",

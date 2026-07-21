@@ -7,7 +7,8 @@
   <div class="flex flex-wrap items-start justify-between gap-4">
     <div>
       <h1 class="text-3xl font-extrabold">Ton rapport d'orientation</h1>
-      <p class="text-gray-500 mt-1">Généré le {{ report.created_at|date:"d/m/Y à H:i" }}</p>
+      <p class="text-gray-600 mt-1 font-semibold">{{ session.user.display_name }}</p>
+      <p class="text-gray-500 text-sm">Généré le {{ report.created_at|date:"d/m/Y à H:i" }}</p>
     </div>
     <div class="flex gap-2">
       <a href="{% url 'orientation:report_pdf' report.id %}" class="rounded-md bg-brand px-4 py-2 text-sm font-semibold text-white hover:bg-brand-dark">Télécharger le PDF</a>
@@ -114,6 +115,18 @@
   </section>
   {% endif %}
 
+  <!-- Notes -->
+  {% if session.answers.grades %}
+  <section>
+    <h2 class="text-lg font-bold mb-4">Tes notes par matière</h2>
+    <div class="flex flex-wrap gap-2">
+      {% for matiere, note in session.answers.grades.items %}
+      <span class="rounded-full bg-gray-100 text-gray-700 px-3 py-1.5 text-sm font-medium">{{ matiere }} : {{ note }}/20</span>
+      {% endfor %}
+    </div>
+  </section>
+  {% endif %}
+
   <!-- Conseils -->
   {% if report.personalized_advice %}
   <section>
@@ -152,5 +165,15 @@
     </ul>
   </section>
   {% endif %}
+
+  <!-- Avertissement IA -->
+  <section class="rounded-xl border border-accent/40 bg-accent/10 p-4 flex gap-3">
+    <svg class="w-5 h-5 shrink-0 text-accent-dark mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z"/><path d="M12 9v4M12 17h.01"/></svg>
+    <p class="text-sm text-gray-700">
+      <strong>Avertissement :</strong> ce rapport est généré par une intelligence artificielle.
+      L'IA peut faire des erreurs ou des approximations — vérifie les informations importantes (coûts, admissions, dates)
+      auprès des établissements et sources officielles avant toute décision.
+    </p>
+  </section>
 </div>
 {% endblock %}

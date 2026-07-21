@@ -1,0 +1,36 @@
+<svg viewBox="0 0 400 400" class="w-full h-auto max-w-sm mx-auto lg:mx-0" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- halo -->
+  <circle cx="200" cy="200" r="170" fill="white" fill-opacity="0.04"/>
+  <circle cx="200" cy="200" r="130" stroke="white" stroke-opacity="0.18" stroke-width="1.5" stroke-dasharray="4 8"/>
+
+  <!-- compass rim -->
+  <circle cx="200" cy="200" r="96" fill="white" fill-opacity="0.08"/>
+  <circle cx="200" cy="200" r="96" stroke="white" stroke-opacity="0.35" stroke-width="2"/>
+  <circle cx="200" cy="200" r="6" fill="#f2b134"/>
+
+  <!-- cardinal ticks -->
+  <path d="M200 96v14M200 290v14M96 200h14M290 200h14" stroke="white" stroke-opacity="0.35" stroke-width="2" stroke-linecap="round"/>
+
+  <!-- compass needle (points toward "cap") -->
+  <path d="M200 122 224 208 200 196 176 208Z" fill="#f2b134"/>
+  <path d="M200 278 182 202 200 212 218 202Z" fill="white" fill-opacity="0.55"/>
+
+  <!-- graduation cap, floating top-right -->
+  <g transform="translate(266,74)">
+    <circle cx="30" cy="30" r="30" fill="#0a3764"/>
+    <path d="M8 26 30 16l22 10-22 10Z" fill="white"/>
+    <path d="M16 30v9c0 4 6 8 14 8s14-4 14-8v-9" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M48 27v11" stroke="#f2b134" stroke-width="2.5" stroke-linecap="round"/>
+  </g>
+
+  <!-- book, floating bottom-left -->
+  <g transform="translate(70,272)">
+    <circle cx="28" cy="28" r="28" fill="#f2b134"/>
+    <path d="M14 16h12a4 4 0 0 1 4 4v22a4 4 0 0 0-4-3H14Z" fill="#072844"/>
+    <path d="M42 16H30a4 4 0 0 0-4 4v22a4 4 0 0 1 4-3h12Z" fill="white"/>
+  </g>
+
+  <!-- little sparkles -->
+  <path d="M320 250l3 8 8 3-8 3-3 8-3-8-8-3 8-3Z" fill="white" fill-opacity="0.7"/>
+  <path d="M64 108l2.5 6 6 2.5-6 2.5-2.5 6-2.5-6-6-2.5 6-2.5Z" fill="white" fill-opacity="0.5"/>
+</svg>

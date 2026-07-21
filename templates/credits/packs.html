@@ -1,31 +1,31 @@
 {% extends "dashboard_base.html" %}
-{% block title %}Acheter des crédits — Cap Avenir{% endblock %}
-{% block page_title %}Acheter des crédits{% endblock %}
+{% block title %}Payer — Cap Avenir{% endblock %}
+{% block page_title %}Payer mon orientation{% endblock %}
 {% block content %}
 <div class="px-4 sm:px-8 py-8">
-  <h1 class="title-uppercase text-3xl font-extrabold text-center text-brand">Recharge tes crédits</h1>
+  <h1 class="title-uppercase text-3xl font-extrabold text-center text-brand">500 FCFA = 500 crédits</h1>
   <p class="text-center text-gray-500 mt-2">
-    Les crédits servent à générer tes analyses d'orientation et les autres services IA.
+    Un rapport d'orientation coûte {{ credits_per_report }} crédits
+    (+{{ advanced_surcharge }} pour un niveau avancé : licence, master, doctorat…).
   </p>
   <p class="text-center text-sm font-semibold text-brand mt-1 inline-flex items-center gap-2 justify-center w-full">
     <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/></svg>
-    Paiement 100% sécurisé via FedaPay (Mobile Money & carte) — dès {{ min_price|default:200 }} FCFA
+    Paiement 100% sécurisé via FedaPay (Mobile Money & carte)
   </p>
 
-  <div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+  <div class="mt-10 flex justify-center">
     {% for pack in packs %}
-    <div class="rounded-2xl bg-white card-shadow border border-brand-light p-6 text-center flex flex-col">
+    <div class="w-full max-w-sm rounded-2xl bg-white card-shadow border border-brand-light p-8 text-center flex flex-col">
       <h3 class="font-bold text-lg text-brand title-uppercase">{{ pack.name }}</h3>
-      <p class="mt-4 text-4xl font-extrabold text-brand">{{ pack.credits }}</p>
-      <p class="text-sm text-gray-400 font-semibold">crédits</p>
-      <p class="mt-3 text-lg font-bold text-gray-800">{{ pack.price_xof|floatformat:0 }} FCFA</p>
+      <p class="mt-4 text-4xl font-extrabold text-brand">{{ pack.credits }}<span class="text-base font-semibold text-gray-400"> crédits</span></p>
+      <p class="mt-1 text-lg font-bold text-gray-800">{{ pack.price_xof|floatformat:0 }} FCFA</p>
       <form method="post" action="{% url 'credits:checkout' pack.id %}" class="mt-6 mt-auto pt-4">
         {% csrf_token %}
-        <button class="w-full rounded-full bg-brand px-4 py-2.5 font-bold text-white hover:bg-brand-dark">Acheter</button>
+        <button class="w-full rounded-full bg-brand px-4 py-2.5 font-bold text-white hover:bg-brand-dark">Payer</button>
       </form>
     </div>
     {% empty %}
-    <p class="col-span-full text-center text-gray-500">Aucun pack disponible pour le moment.</p>
+    <p class="col-span-full text-center text-gray-500">Aucune offre disponible pour le moment.</p>
     {% endfor %}
   </div>
 </div>

@@ -6,7 +6,6 @@ app_name = "orientation"
 
 urlpatterns = [
     path("orientation/", views.start, name="start"),
-    path("orientation-express/", views.express, name="express"),
     path("orientation/<int:session_id>/", views.chat, name="chat"),
     path("orientation/<int:session_id>/save/", views.save_answers, name="save_answers"),
     path("orientation/<int:session_id>/generer/", views.generate, name="generate"),

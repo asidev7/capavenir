@@ -1,5 +1,4 @@
 import json
-import logging
 
 from django.conf import settings
 from django.contrib import messages
@@ -11,35 +10,16 @@ from django.views.decorators.http import require_POST
 from credits import services as credit_services
 
 from .models import BacSerie, OrientationSession, Subject
-from .questions import build_questions
+from .questions import ADVANCED_LEVELS, build_questions
 from .tasks import generate_report
 
-logger = logging.getLogger(__name__)
 
-
-def _extract_transcript_text(uploaded_file):
-    """Best-effort text extraction from an uploaded transcript. PDF only.
-
-    Images are stored as-is but not OCR'd (the model is text-only); the free
-    description carries the rest. Returns a trimmed string (may be empty).
-    """
-    name = (getattr(uploaded_file, "name", "") or "").lower()
-    if not name.endswith(".pdf"):
-        return ""
-    try:
-        from pypdf import PdfReader
-
-        reader = PdfReader(uploaded_file)
-        text = "\n".join((page.extract_text() or "") for page in reader.pages)
-        uploaded_file.seek(0)
-        return text.strip()[:4000]
-    except Exception:  # pragma: no cover - best effort
-        logger.warning("Transcript extraction failed for %s", name)
-        try:
-            uploaded_file.seek(0)
-        except Exception:
-            pass
-        return ""
+def _report_cost(answers):
+    """Base cost + surcharge for advanced orientation levels (licence, master...)."""
+    cost = settings.CREDITS_PER_REPORT
+    if (answers or {}).get("level") in ADVANCED_LEVELS:
+        cost += settings.ADVANCED_LEVEL_SURCHARGE
+    return cost
 
 
 @login_required
@@ -76,66 +56,10 @@ def chat(request, session_id):
         "answers_json": session.answers or {},
         "series": BacSerie.objects.all(),
         "credits_per_report": settings.CREDITS_PER_REPORT,
+        "advanced_surcharge": settings.ADVANCED_LEVEL_SURCHARGE,
+        "advanced_levels_json": list(ADVANCED_LEVELS),
     }
     return render(request, "orientation/chat.html", context)
-
-
-@login_required
-def express(request):
-    """Alternative flow: free-text description + optional transcript upload.
-
-    GET renders the form; POST (multipart) debits credits and launches the
-    same agent pipeline, returning JSON so the page can poll for the report.
-    """
-    cost = settings.CREDITS_PER_REPORT
-    if request.method != "POST":
-        if request.user.credits < cost:
-            messages.error(
-                request,
-                f"Il te faut au moins {cost} crédits pour générer un rapport. Recharge ton compte.",
-            )
-            return redirect("credits:packs")
-        return render(request, "orientation/express.html", {"credits_per_report": cost})
-
-    description = (request.POST.get("description") or "").strip()
-    country = (request.POST.get("country") or "").strip()
-    transcript = request.FILES.get("transcript")
-
-    if not description and not transcript:
-        return JsonResponse(
-            {"ok": False, "error": "Décris ton profil ou ajoute ton relevé de notes."}, status=400
-        )
-
-    answers = {"mode": "express"}
-    if country:
-        answers["country"] = country
-    if description:
-        answers["free_description"] = description
-
-    session = OrientationSession(
-        user=request.user, mode=OrientationSession.Mode.EXPRESS, answers=answers
-    )
-    if transcript:
-        text = _extract_transcript_text(transcript)
-        if text:
-            answers["transcript_text"] = text
-        session.transcript_file = transcript
-    session.answers = answers
-
-    try:
-        credit_services.consume_credits(request.user, cost, reason="Rapport d'orientation (express)")
-    except credit_services.InsufficientCredits:
-        return JsonResponse(
-            {"ok": False, "error": "insufficient_credits", "redirect": "/credits/"}, status=402
-        )
-
-    session.credits_spent = cost
-    session.status = OrientationSession.Status.GENERATING
-    session.progress_message = "Démarrage…"
-    session.save()
-
-    generate_report.delay(session.pk)
-    return JsonResponse({"ok": True, "session_id": session.pk})
 
 
 @login_required
@@ -179,7 +103,7 @@ def generate(request, session_id):
     except (json.JSONDecodeError, UnicodeDecodeError):
         pass
 
-    cost = settings.CREDITS_PER_REPORT
+    cost = _report_cost(session.answers)
     try:
         credit_services.consume_credits(request.user, cost, reason="Rapport d'orientation")
     except credit_services.InsufficientCredits:

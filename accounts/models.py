@@ -57,12 +57,9 @@ class User(AbstractUser):
 
 class Profile(models.Model):
     class Level(models.TextChoices):
-        COLLEGE = "COLLEGE", "Collège"
-        LYCEE = "LYCEE", "Lycée"
-        TERMINALE = "TERMINALE", "Terminale"
-        BAC_OBTENU = "BAC_OBTENU", "Bac obtenu"
-        UNIVERSITE = "UNIVERSITE", "Université"
-        CHERCHEUR_EMPLOI = "CHERCHEUR_EMPLOI", "Chercheur d'emploi"
+        APRES_BAC = "APRES_BAC", "Après le Bac"
+        APRES_LICENCE = "APRES_LICENCE", "Après la Licence"
+        AUTRE = "AUTRE", "Autre"
 
     class StudyLocation(models.TextChoices):
         BENIN = "BENIN", "Bénin"

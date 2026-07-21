@@ -9,6 +9,7 @@ import re
 import requests
 from django.conf import settings
 
+from core import config as platform_config
 from knowledge import services as knowledge
 
 logger = logging.getLogger(__name__)
@@ -109,6 +110,7 @@ def consolidate_profile(answers: dict) -> str:
     labels = {
         "country": "Pays", "level": "Besoin d'orientation", "bac_serie": "Série du Bac",
         "favorite_subjects": "Matières préférées",
+        "grades": "Notes par matière (/20)",
         "passions_interests": "Passions & centres d'intérêt",
         "skills_strengths": "Compétences & points forts",
         "dream_sector": "Secteur qui attire",
@@ -181,7 +183,10 @@ def _extract_json(text: str) -> dict:
 
 
 def call_deepseek(profile, rag_text, web_results):
-    if not settings.DEEPSEEK_API_KEY:
+    api_key = platform_config.get("deepseek_api_key")
+    api_base = platform_config.get("deepseek_api_base")
+    model = platform_config.get("deepseek_model")
+    if not api_key:
         raise RuntimeError("DEEPSEEK_API_KEY manquante.")
 
     web_block = "\n\n".join(
@@ -197,13 +202,13 @@ def call_deepseek(profile, rag_text, web_results):
     )
 
     resp = requests.post(
-        f"{settings.DEEPSEEK_API_BASE}/chat/completions",
+        f"{api_base}/chat/completions",
         headers={
-            "Authorization": f"Bearer {settings.DEEPSEEK_API_KEY}",
+            "Authorization": f"Bearer {api_key}",
             "Content-Type": "application/json",
         },
         json={
-            "model": settings.DEEPSEEK_MODEL,
+            "model": model,
             "messages": [
                 {"role": "system", "content": SYSTEM_PROMPT},
                 {"role": "user", "content": user_prompt},

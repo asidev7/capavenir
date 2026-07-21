@@ -1,5 +1,4 @@
 from allauth.account.adapter import DefaultAccountAdapter
-from allauth.socialaccount.adapter import DefaultSocialAccountAdapter
 from django.conf import settings
 from django.db import transaction
 
@@ -31,14 +30,4 @@ class AccountAdapter(DefaultAccountAdapter):
         user = super().save_user(request, user, form, commit=commit)
         if commit:
             grant_signup_bonus(user)
-        return user
-
-
-class SocialAccountAdapter(DefaultSocialAccountAdapter):
-    def save_user(self, request, sociallogin, form=None):
-        user = super().save_user(request, sociallogin, form=form)
-        if sociallogin.account.provider == "google":
-            user.is_google_account = True
-            user.save(update_fields=["is_google_account"])
-        grant_signup_bonus(user)
         return user

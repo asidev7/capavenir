@@ -2,7 +2,8 @@
 import logging
 
 import requests
-from django.conf import settings
+
+from core import config as platform_config
 
 from .models import HAS_PGVECTOR, KnowledgeDocument
 
@@ -35,14 +36,14 @@ def embed_text(text: str):
 
     Kept provider-agnostic: any OpenAI-compatible /embeddings endpoint works.
     """
-    api_key = settings.DEEPSEEK_API_KEY
+    api_key = platform_config.get("deepseek_api_key")
     if not api_key or not text.strip():
         return None
     try:
         resp = requests.post(
-            f"{settings.DEEPSEEK_API_BASE}/embeddings",
+            f"{platform_config.get('deepseek_api_base')}/embeddings",
             headers={"Authorization": f"Bearer {api_key}", "Content-Type": "application/json"},
-            json={"model": settings.DEEPSEEK_EMBEDDING_MODEL, "input": text[:8000]},
+            json={"model": platform_config.get("deepseek_embedding_model"), "input": text[:8000]},
             timeout=30,
         )
         resp.raise_for_status()

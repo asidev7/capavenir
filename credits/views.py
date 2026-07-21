@@ -1,6 +1,7 @@
 import json
 import logging
 
+from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, HttpResponseBadRequest
@@ -17,13 +18,29 @@ logger = logging.getLogger(__name__)
 
 @login_required
 def packs(request):
-    return render(request, "credits/packs.html", {"packs": CreditPack.objects.filter(active=True)})
+    return render(
+        request,
+        "credits/packs.html",
+        {
+            "packs": CreditPack.objects.filter(active=True),
+            "credits_per_report": settings.CREDITS_PER_REPORT,
+            "advanced_surcharge": settings.ADVANCED_LEVEL_SURCHARGE,
+        },
+    )
 
 
 @login_required
 def my_credits(request):
     txs = request.user.transactions.all()[:100]
-    return render(request, "credits/my_credits.html", {"transactions": txs})
+    return render(
+        request,
+        "credits/my_credits.html",
+        {
+            "transactions": txs,
+            "credits_per_report": settings.CREDITS_PER_REPORT,
+            "advanced_surcharge": settings.ADVANCED_LEVEL_SURCHARGE,
+        },
+    )
 
 
 @login_required

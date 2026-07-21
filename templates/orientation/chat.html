@@ -4,6 +4,7 @@
 {% block content %}
 {{ questions_json|json_script:"questions-data" }}
 {{ answers_json|json_script:"answers-data" }}
+{{ advanced_levels_json|json_script:"advanced-levels-data" }}
 <script id="series-data" type="application/json">[
   {% for s in series %}{"code": "{{ s.code|escapejs }}", "label": "{{ s.label|escapejs }}"}{% if not forloop.last %},{% endif %}{% endfor %}
 ]</script>
@@ -117,10 +118,6 @@
       </div>
     </template>
 
-    <!-- Raccourci vers le mode express -->
-    <p class="text-center text-sm text-gray-500 mt-6">
-      Pas le temps ? <a href="{% url 'orientation:express' %}" class="font-bold text-brand hover:underline">Génère ton rapport en décrivant ton profil →</a>
-    </p>
   </div>
 
   <!-- Recap -->
@@ -135,7 +132,8 @@
       </template>
     </dl>
     <div class="rounded-lg bg-brand/5 border border-brand/20 p-4 text-sm text-brand">
-      La génération du rapport consomme <strong>{{ credits_per_report }} crédits</strong>.
+      La génération du rapport consomme <strong x-text="totalCost()"></strong> crédits
+      <span x-show="isAdvanced()">(dont <strong>{{ advanced_surcharge }}</strong> crédits pour un niveau d'orientation avancé)</span>.
       Solde actuel : <strong>{{ user_credits }}</strong>.
     </div>
     <div class="flex gap-2">
@@ -171,6 +169,7 @@ function chatbot() {
     questions: JSON.parse(document.getElementById('questions-data').textContent),
     series: JSON.parse(document.getElementById('series-data').textContent),
     answers: JSON.parse(document.getElementById('answers-data').textContent) || {},
+    advancedLevels: JSON.parse(document.getElementById('advanced-levels-data').textContent) || [],
     subjects: [],
     step: 0,
     phase: 'chat',
@@ -182,6 +181,8 @@ function chatbot() {
     init() {
       if (this.answers.bac_serie) this.loadSubjects(this.answers.bac_serie);
     },
+    isAdvanced() { return this.advancedLevels.includes(this.answers.level); },
+    totalCost() { return {{ credits_per_report }} + (this.isAdvanced() ? {{ advanced_surcharge }} : 0); },
     selectSerie(code) {
       if (this.answers.bac_serie !== code) {
         this.answers.favorite_subjects = [];

@@ -48,10 +48,7 @@ SUBJECTS = {
 }
 
 PACKS = [
-    ("Découverte", 5, 200, 1),
-    ("Étudiant", 15, 500, 2),
-    ("Ambitieux", 40, 1000, 3),
-    ("Pro", 100, 2000, 4),
+    ("Orientation", 500, 500, 1),
 ]
 
 
@@ -75,5 +72,6 @@ class Command(BaseCommand):
             CreditPack.objects.update_or_create(
                 name=name, defaults={"credits": credits, "price_xof": price, "order": order, "active": True}
             )
+        CreditPack.objects.exclude(name__in=[p[0] for p in PACKS]).update(active=False)
         self.stdout.write(self.style.SUCCESS(f"{len(PACKS)} packs de crédits seedés."))
         self.stdout.write(self.style.SUCCESS("Seed terminé ✅"))

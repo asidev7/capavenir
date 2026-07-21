@@ -59,8 +59,6 @@ INSTALLED_APPS = [
     # Third-party
     "allauth",
     "allauth.account",
-    "allauth.socialaccount",
-    "allauth.socialaccount.providers.google",
     # Local
     "accounts",
     "orientation",
@@ -132,22 +130,11 @@ ACCOUNT_LOGIN_METHODS = {"email"}
 ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]
 ACCOUNT_EMAIL_VERIFICATION = "optional"
 ACCOUNT_ADAPTER = "accounts.adapters.AccountAdapter"
-SOCIALACCOUNT_ADAPTER = "accounts.adapters.SocialAccountAdapter"
+ACCOUNT_SIGNUP_FORM_CLASS = "accounts.forms.SignupExtraForm"
+ACCOUNT_SIGNUP_REDIRECT_URL = "credits:packs"
 LOGIN_REDIRECT_URL = "orientation:start"
 LOGOUT_REDIRECT_URL = "core:landing"
 LOGIN_URL = "account_login"
-
-SOCIALACCOUNT_PROVIDERS = {
-    "google": {
-        "APP": {
-            "client_id": env("GOOGLE_OAUTH_CLIENT_ID", ""),
-            "secret": env("GOOGLE_OAUTH_CLIENT_SECRET", ""),
-            "key": "",
-        },
-        "SCOPE": ["profile", "email"],
-        "AUTH_PARAMS": {"access_type": "online"},
-    }
-}
 
 # --- I18N ---
 LANGUAGE_CODE = "fr"
@@ -194,9 +181,10 @@ FEDAPAY_ENVIRONMENT = env("FEDAPAY_ENVIRONMENT", "sandbox")
 PAYMENT_CURRENCY = env("PAYMENT_CURRENCY", "XOF")
 
 # --- Credits economy ---
-SIGNUP_BONUS_CREDITS = env_int("SIGNUP_BONUS_CREDITS", 10)
-CREDITS_PER_REPORT = env_int("CREDITS_PER_REPORT", 5)
-MIN_PACK_PRICE_XOF = env_int("MIN_PACK_PRICE_XOF", 200)
+SIGNUP_BONUS_CREDITS = env_int("SIGNUP_BONUS_CREDITS", 0)
+CREDITS_PER_REPORT = env_int("CREDITS_PER_REPORT", 300)
+ADVANCED_LEVEL_SURCHARGE = env_int("ADVANCED_LEVEL_SURCHARGE", 100)
+MIN_PACK_PRICE_XOF = env_int("MIN_PACK_PRICE_XOF", 500)
 
 # --- Security (prod) ---
 if not DEBUG:

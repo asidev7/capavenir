@@ -5,6 +5,11 @@ from django import forms
 
 from .models import Profile, User
 
+_INPUT_CLASS = (
+    "w-full rounded-md border border-gray-300 px-3 py-2 "
+    "focus:border-brand focus:ring-1 focus:ring-brand outline-none"
+)
+
 # Matches "Matière: 15" / "Physique-Chimie : 12,5" pairs, decimal comma or dot allowed.
 _GRADE_RE = re.compile(r"([^:,;\n]+?)\s*[:=]\s*(\d+(?:[.,]\d+)?)")
 
@@ -36,6 +41,28 @@ def _to_num(v):
         return float(str(v).strip().replace(",", "."))
     except (TypeError, ValueError):
         return v
+
+
+class SignupExtraForm(forms.Form):
+    """Extra fields merged into allauth's signup form (see ACCOUNT_SIGNUP_FORM_CLASS)."""
+
+    first_name = forms.CharField(label="Prénom", max_length=150)
+    last_name = forms.CharField(label="Nom", max_length=150)
+    level = forms.ChoiceField(label="Niveau d'études", choices=Profile.Level.choices)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        for field in self.fields.values():
+            css = field.widget.attrs.get("class", "")
+            field.widget.attrs["class"] = f"{css} {_INPUT_CLASS}".strip()
+
+    def signup(self, request, user):
+        user.first_name = self.cleaned_data["first_name"]
+        user.last_name = self.cleaned_data["last_name"]
+        user.save(update_fields=["first_name", "last_name"])
+        Profile.objects.update_or_create(
+            user=user, defaults={"level": self.cleaned_data["level"]}
+        )
 
 
 class AvatarForm(forms.ModelForm):
