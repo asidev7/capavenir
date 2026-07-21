@@ -84,18 +84,51 @@
               </div>
             </div>
           </template>
-          <!-- grades -->
+          <!-- grades : écrire ou uploader le relevé -->
           <template x-if="q.type === 'grades'">
-            <div class="space-y-2">
-              <p x-show="!subjects.length" class="text-sm text-gray-500">Aucune matière à noter.</p>
-              <template x-for="subj in subjects" :key="subj.code">
-                <div class="flex items-center gap-3">
-                  <label class="flex-1 text-sm" x-text="subj.name"></label>
-                  <input type="number" min="0" max="20" step="0.5" placeholder="/20"
-                         @input="setGrade(subj.name, $event.target.value)"
-                         class="w-24 rounded-md border border-gray-300 px-2 py-1 focus:border-brand focus:ring-1 focus:ring-brand outline-none">
-                </div>
-              </template>
+            <div class="space-y-4">
+              <!-- Bascule écrire / uploader (plat, sans carte) -->
+              <div class="flex gap-2">
+                <button type="button" @click="notesMode = 'write'"
+                        :class="notesMode === 'write' ? 'bg-brand text-white border-brand' : 'bg-white text-gray-700 border-gray-300 hover:border-brand'"
+                        class="rounded-full border px-4 py-2 text-sm font-semibold">✍️ Écrire mes notes</button>
+                <button type="button" @click="notesMode = 'upload'"
+                        :class="notesMode === 'upload' ? 'bg-brand text-white border-brand' : 'bg-white text-gray-700 border-gray-300 hover:border-brand'"
+                        class="rounded-full border px-4 py-2 text-sm font-semibold">📎 Uploader mon relevé</button>
+              </div>
+
+              <!-- Mode écriture -->
+              <div x-show="notesMode === 'write'" class="space-y-2">
+                <p x-show="!subjects.length" class="text-sm text-gray-500">Aucune matière à noter.</p>
+                <template x-for="subj in subjects" :key="subj.code">
+                  <div class="flex items-center gap-3">
+                    <label class="flex-1 text-sm" x-text="subj.name"></label>
+                    <input type="number" min="0" max="20" step="0.5" placeholder="/20"
+                           :value="(answers.grades || {})[subj.name] ?? ''"
+                           @input="setGrade(subj.name, $event.target.value)"
+                           class="w-24 rounded-md border border-gray-300 px-2 py-1 focus:border-brand focus:ring-1 focus:ring-brand outline-none">
+                  </div>
+                </template>
+              </div>
+
+              <!-- Mode upload : zone plate, sans ombre -->
+              <div x-show="notesMode === 'upload'">
+                <label class="flex items-center gap-3 rounded-xl border-2 border-dashed border-gray-300 px-4 py-4 cursor-pointer hover:border-brand transition">
+                  <svg class="w-6 h-6 text-brand shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg>
+                  <span class="text-sm text-gray-600">
+                    <span x-show="!uploadedFile && !uploading">Clique pour choisir ton relevé de notes (PDF ou image)</span>
+                    <span x-show="uploading" class="font-bold text-brand">Envoi en cours…</span>
+                    <span x-show="uploadedFile && !uploading" class="font-bold text-brand" x-text="uploadedFile"></span>
+                  </span>
+                  <input type="file" accept=".pdf,image/*" class="hidden" @change="uploadTranscript($event.target.files[0])">
+                </label>
+              </div>
+
+              <!-- Confidentialité -->
+              <p class="text-xs text-gray-400 flex items-start gap-1.5">
+                <svg class="w-4 h-4 shrink-0 mt-0.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="10" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                Tes notes sont confidentielles : elles servent uniquement à personnaliser ton rapport et ne sont jamais partagées.
+              </p>
             </div>
           </template>
 
@@ -177,9 +210,13 @@ function chatbot() {
     progress: '',
     csrf: '{{ csrf_token }}',
     sessionId: {{ session.id }},
+    notesMode: 'write',
+    uploadedFile: '',
+    uploading: false,
 
     init() {
       if (this.answers.bac_serie) this.loadSubjects(this.answers.bac_serie);
+      if (this.answers.notes_mode === 'upload') this.notesMode = 'upload';
     },
     isAdvanced() { return this.advancedLevels.includes(this.answers.level); },
     totalCost() { return {{ credits_per_report }} + (this.isAdvanced() ? {{ advanced_surcharge }} : 0); },
@@ -206,6 +243,35 @@ function chatbot() {
       if (!this.answers.grades) this.answers.grades = {};
       if (val === '' || val === null) { delete this.answers.grades[name]; }
       else { this.answers.grades[name] = parseFloat(val); }
+      this.answers.notes_mode = 'write';
+    },
+    async uploadTranscript(file) {
+      if (!file) return;
+      this.uploading = true;
+      this.error = '';
+      try {
+        const body = new FormData();
+        body.append('transcript', file);
+        const r = await fetch(`/orientation/${this.sessionId}/upload-notes/`, {
+          method: 'POST',
+          headers: {'X-CSRFToken': this.csrf},
+          body
+        });
+        const d = await r.json();
+        if (d.ok) {
+          this.uploadedFile = d.filename;
+          this.answers.notes_mode = 'upload';
+          delete this.answers.grades;
+        } else {
+          this.error = d.error || "L'envoi du fichier a échoué.";
+          this.notesMode = 'write';
+        }
+      } catch (e) {
+        this.error = "L'envoi du fichier a échoué.";
+        this.notesMode = 'write';
+      } finally {
+        this.uploading = false;
+      }
     },
     validate(q) {
       const v = this.answers[q.key];
@@ -232,6 +298,9 @@ function chatbot() {
     },
     prev() { this.error = ''; if (this.step > 0) this.step--; },
     displayAnswer(q) {
+      if (q.key === 'grades' && this.answers.notes_mode === 'upload') {
+        return this.uploadedFile ? `📎 ${this.uploadedFile}` : 'Relevé de notes uploadé';
+      }
       const v = this.answers[q.key];
       if (v === undefined || v === '' || v === null) return '—';
       if (Array.isArray(v)) return v.join(', ') || '—';

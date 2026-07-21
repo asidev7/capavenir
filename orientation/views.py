@@ -1,4 +1,5 @@
 import json
+import logging
 
 from django.conf import settings
 from django.contrib import messages
@@ -12,6 +13,33 @@ from credits import services as credit_services
 from .models import BacSerie, OrientationSession, Subject
 from .questions import ADVANCED_LEVELS, build_questions
 from .tasks import generate_report
+
+logger = logging.getLogger(__name__)
+
+
+def _extract_transcript_text(uploaded_file):
+    """Best-effort text extraction from an uploaded transcript. PDF only.
+
+    Images are stored as-is but not OCR'd (the model is text-only). Returns a
+    trimmed string (may be empty).
+    """
+    name = (getattr(uploaded_file, "name", "") or "").lower()
+    if not name.endswith(".pdf"):
+        return ""
+    try:
+        from pypdf import PdfReader
+
+        reader = PdfReader(uploaded_file)
+        text = "\n".join((page.extract_text() or "") for page in reader.pages)
+        uploaded_file.seek(0)
+        return text.strip()[:4000]
+    except Exception:  # pragma: no cover - best effort
+        logger.warning("Transcript extraction failed for %s", name)
+        try:
+            uploaded_file.seek(0)
+        except Exception:
+            pass
+        return ""
 
 
 def _report_cost(answers):
@@ -83,6 +111,33 @@ def save_answers(request, session_id):
         session.answers = answers
         session.save(update_fields=["answers"])
     return JsonResponse({"ok": True})
+
+
+@login_required
+@require_POST
+def upload_transcript(request, session_id):
+    """AJAX: upload a relevé de notes (PDF/image) instead of entering grades manually.
+
+    Stored on the session privately (media, not public), text extracted best-effort
+    for the AI, never exposed back to the client.
+    """
+    session = get_object_or_404(OrientationSession, pk=session_id, user=request.user)
+    transcript = request.FILES.get("transcript")
+    if not transcript:
+        return JsonResponse({"ok": False, "error": "Aucun fichier reçu."}, status=400)
+    if transcript.size > 10 * 1024 * 1024:
+        return JsonResponse({"ok": False, "error": "Fichier trop volumineux (10 Mo max)."}, status=400)
+
+    text = _extract_transcript_text(transcript)
+    session.transcript_file = transcript
+    answers = dict(session.answers or {})
+    answers["notes_mode"] = "upload"
+    answers.pop("grades", None)
+    if text:
+        answers["transcript_text"] = text
+    session.answers = answers
+    session.save(update_fields=["transcript_file", "answers"])
+    return JsonResponse({"ok": True, "filename": transcript.name})
 
 
 @login_required
